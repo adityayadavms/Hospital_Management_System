@@ -13,12 +13,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/admin")
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('ADMIN')")
 public class AdminController {
 
     private final PatientService patientService;
     private final AdminUserManagementService adminUserManagementService;
 
+    @PreAuthorize("hasAuthority('patient:read')")
     @GetMapping("/patients")
     public ResponseEntity<List<PatientSummaryDto>> getAllPatients(
             @RequestParam(value = "page", defaultValue = "0") Integer pageNumber,
@@ -27,7 +27,7 @@ public class AdminController {
         return ResponseEntity.ok(patientService.getAllPatients(pageNumber, pageSize));
     }
 
-
+    @PreAuthorize("hasAuthority('user:manage')")
     @PostMapping("/promote/doctor/{userId}")
     public ResponseEntity<Void> promoteDoctor(
             @PathVariable Long userId,
@@ -38,6 +38,7 @@ public class AdminController {
            return ResponseEntity.ok().build();
     }
 
+    @PreAuthorize("hasAuthority('user:manage')")
     @PostMapping("/promote/admin/{userId}")
     public ResponseEntity<Void> promoteToAdmin(@PathVariable Long userId){
         adminUserManagementService.promotePatientToAdmin(userId);

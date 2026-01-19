@@ -8,6 +8,7 @@ import com.adityayadavlearning.springboot.hospitalManagement.service.InsuranceSe
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,6 +18,7 @@ public class InsuranceController {
    private final InsuranceService insuranceService;
    private final ModelMapper mapper;
 
+   @PreAuthorize("hasAuthority('patient:write')")
    @PostMapping("/assign")
     public ResponseEntity<PatientDto> assignInsurance(
            @RequestBody  InsuranceDto insuranceDto,
@@ -29,6 +31,7 @@ public class InsuranceController {
        return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize("hasAuthority('patient:write')")
     @PostMapping("/dissociate/{patientId}")
     public ResponseEntity<PatientDto> dissociate(@PathVariable Long patientId){
        Patient patient= insuranceService.dissociateInsuranceFromPatient(patientId);

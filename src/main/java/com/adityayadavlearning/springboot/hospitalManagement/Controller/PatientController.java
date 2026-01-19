@@ -7,6 +7,7 @@ import com.adityayadavlearning.springboot.hospitalManagement.service.PatientServ
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,6 +17,7 @@ public class PatientController {
        private final PatientService patientService;
        private final ModelMapper mapper;
 
+       @PreAuthorize("hasAuthority('patient:read')")
        @GetMapping("/{id}")
        public ResponseEntity<PatientDto> getPatientById(@PathVariable Long id){
            Patient patient = patientService.getPatientById(id);
