@@ -1,6 +1,7 @@
 package com.adityayadavlearning.springboot.hospitalManagement.entity;
 
-import com.adityayadavlearning.springboot.hospitalManagement.Security.RolePermissionMapping;
+import com.adityayadavlearning.springboot.hospitalManagement.Security.PermissionService;
+
 import com.adityayadavlearning.springboot.hospitalManagement.entity.type.AuthProviderType;
 import com.adityayadavlearning.springboot.hospitalManagement.entity.type.RoleType;
 import jakarta.persistence.*;
@@ -11,9 +12,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
+
 import java.util.Set;
-import java.util.stream.Collectors;
+
 
 @Entity
 @Getter
@@ -42,21 +43,27 @@ public class User implements UserDetails {
 
     @ElementCollection(fetch=FetchType.EAGER)
     @Enumerated(EnumType.STRING)
-    Set<RoleType> roles= new HashSet<>();
+    private Set<RoleType> roles= new HashSet<>();
+
+    @Transient
+    private PermissionService permissionService;
+
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-//        return roles.stream()
-//                .map(role-> new SimpleGrantedAuthority("ROLE_"+role.name()))
-//                .collect(Collectors.toSet());
         Set<SimpleGrantedAuthority> authorities = new HashSet<>();
-        roles.forEach(
-                role -> {
-                    Set<SimpleGrantedAuthority> permissions = RolePermissionMapping.getAuthoritiesForRole(role);
-                    authorities.addAll(permissions);
-                    authorities.add(new SimpleGrantedAuthority("ROLE_"+role.name()));
-                }
-        );
+
+        for (RoleType role : roles) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.name()));
+
+            if (permissionService != null) {
+                authorities.addAll(
+                        permissionService.getAuthoritiesForRole(role)
+                );
+            }
+        }
+
         return authorities;
     }
 }
