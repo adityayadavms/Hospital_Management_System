@@ -69,9 +69,9 @@ Prerequisites:
 4. (Optional) Run tests:
    mvn test
 
-## Example application.properties (dev / H2)
+## Example application.properties 
 
-Add `src/main/resources/application.properties` (example):
+Add `src/main/resources/application.properties` :
 
 spring.datasource.url=jdbc:h2:mem:hospitaldb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
 spring.datasource.driverClassName=org.h2.Driver
@@ -110,11 +110,11 @@ Notes:
 
 (Refer to controller classes for full list of endpoints and DTO formats)
 
-## Running with a real DB (MySQL example)
+## Running with a real DB (Postgres SQL example)
 
 Example `application.properties` snippet:
 
-spring.datasource.url=jdbc:mysql://localhost:3306/hospital_db
+spring.datasource.url=jdbc:postgres://localhost:3306/hospital_db
 spring.datasource.username=youruser
 spring.datasource.password=yourpassword
 spring.jpa.hibernate.ddl-auto=update
